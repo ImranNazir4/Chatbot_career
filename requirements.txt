@@ -1,0 +1,15 @@
+langchain-community
+pypdf
+langchain-huggingface
+sentence_transformers
+yt_dlp
+pydub
+chromadb
+langchain_groq
+httpx<0.25.0
+langchainhub
+faiss-cpu
+langchain
+openpyxl
+python-dotenv
+langchain-groq
