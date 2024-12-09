@@ -26,5 +26,49 @@ llm = ChatGroq(
     api_key=GROQ_API_KEY
 )
 ###################################################################################################################################
+loader = PyPDFLoader("Artificial Intelligence for Career Guidance – Current Requirements and Prospects for the Future.pdf")
+pages = loader.load()
+chunk_size =500
+chunk_overlap = 100
+r_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=chunk_size,
+    chunk_overlap=chunk_overlap
+)
+c_splitter = CharacterTextSplitter(
+    chunk_size=chunk_size,
+    chunk_overlap=chunk_overlap
+)
+text_chunks=r_splitter.split_documents(pages)
+# # download the embeddings to use to represent text chunks in a vector space, using the pre-trained model "sentence-transformers/all-MiniLM-L6-v2"
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+vectordb = Chroma.from_documents(
+    documents=text_chunks,
+    embedding=embeddings
+)
+# Retrieve and generate using the relevant snippets of the blog.
+retriever = vectordb.as_retriever()
+prompt = hub.pull("rlm/rag-prompt")
+
+
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
+
+
+rag_chain = (
+    {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt
+    | llm
+    | StrOutputParser()
+)
+
+
+
+
+
+
+
+
+
+
 st.header("chat_with_data")
 
