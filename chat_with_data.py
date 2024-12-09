@@ -15,6 +15,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_groq import ChatGroq
 # Load environment variables
 load_dotenv()
@@ -41,7 +42,7 @@ c_splitter = CharacterTextSplitter(
 text_chunks=r_splitter.split_documents(pages)
 # # download the embeddings to use to represent text chunks in a vector space, using the pre-trained model "sentence-transformers/all-MiniLM-L6-v2"
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-vectordb = Chroma.from_documents(
+vectordb = FAISS.from_documents(
     documents=text_chunks,
     embedding=embeddings
 )
