@@ -41,7 +41,14 @@ c_splitter = CharacterTextSplitter(
 )
 text_chunks=r_splitter.split_documents(pages)
 # # download the embeddings to use to represent text chunks in a vector space, using the pre-trained model "sentence-transformers/all-MiniLM-L6-v2"
-embeddings = HuggingFaceEmbeddings(model_name="nomic-ai/nomic-embed-text-v1.5")
+from sentence_transformers import SentenceTransformer
+
+embeddings = SentenceTransformer("nomic-ai/nomic-embed-text-v1.5", trust_remote_code=True)
+#sentences = ['search_document: TSNE is a dimensionality reduction algorithm created by Laurens van Der Maaten']
+#embeddings = model.encode(sentences)
+#print(embeddings)
+
+#embeddings = HuggingFaceEmbeddings(model_name="nomic-ai/nomic-embed-text-v1.5")
 vectordb = FAISS.from_documents(
     documents=text_chunks,
     embedding=embeddings
